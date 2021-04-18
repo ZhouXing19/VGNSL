@@ -1,0 +1,360 @@
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/0.pth.tar
+Langs:  en_en
+F1 score:  36.13496244815604
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/1.pth.tar
+Langs:  en_en
+F1 score:  39.686133841497586
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/2.pth.tar
+Langs:  en_en
+F1 score:  40.77569779172738
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/3.pth.tar
+Langs:  en_en
+F1 score:  51.965026342338305
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/4.pth.tar
+Langs:  en_en
+F1 score:  34.426633785450065
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/5.pth.tar
+Langs:  en_en
+F1 score:  33.879609909203005
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/6.pth.tar
+Langs:  en_en
+F1 score:  27.93408810671449
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/7.pth.tar
+Langs:  en_en
+F1 score:  32.00089676045287
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/8.pth.tar
+Langs:  en_en
+F1 score:  29.956282927922878
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/9.pth.tar
+Langs:  en_en
+F1 score:  30.530209617755858
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/10.pth.tar
+Langs:  en_en
+F1 score:  33.823562380899006
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/11.pth.tar
+Langs:  en_en
+F1 score:  30.514516309830732
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/12.pth.tar
+Langs:  en_en
+F1 score:  31.989687254792063
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/13.pth.tar
+Langs:  en_en
+F1 score:  32.72054702387625
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/14.pth.tar
+Langs:  en_en
+F1 score:  29.169375630534695
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/15.pth.tar
+Langs:  en_en
+F1 score:  30.24100437170721
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/16.pth.tar
+Langs:  en_en
+F1 score:  30.5840152449277
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/17.pth.tar
+Langs:  en_en
+F1 score:  29.55274072413407
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/18.pth.tar
+Langs:  en_en
+F1 score:  27.434144154242798
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/19.pth.tar
+Langs:  en_en
+F1 score:  29.868848783768634
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/20.pth.tar
+Langs:  en_en
+F1 score:  30.82165676493667
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/21.pth.tar
+Langs:  en_en
+F1 score:  31.346261629862123
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/22.pth.tar
+Langs:  en_en
+F1 score:  28.35780742069275
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/23.pth.tar
+Langs:  en_en
+F1 score:  29.400291447147183
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/0.pth.tar
+Langs:  en_fr
+F1 score:  31.287349720706708
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/1.pth.tar
+Langs:  en_fr
+F1 score:  33.65497662171607
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/2.pth.tar
+Langs:  en_fr
+F1 score:  33.51302736586608
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/3.pth.tar
+Langs:  en_fr
+F1 score:  40.6050722478369
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/4.pth.tar
+Langs:  en_fr
+F1 score:  22.99469586559248
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/5.pth.tar
+Langs:  en_fr
+F1 score:  23.90382125229584
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/6.pth.tar
+Langs:  en_fr
+F1 score:  20.09069582224919
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/7.pth.tar
+Langs:  en_fr
+F1 score:  22.546092873822285
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/8.pth.tar
+Langs:  en_fr
+F1 score:  20.95972867104073
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/9.pth.tar
+Langs:  en_fr
+F1 score:  22.73030183179555
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/10.pth.tar
+Langs:  en_fr
+F1 score:  24.588645143114103
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/11.pth.tar
+Langs:  en_fr
+F1 score:  21.671642114502124
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/12.pth.tar
+Langs:  en_fr
+F1 score:  23.699024234313793
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/13.pth.tar
+Langs:  en_fr
+F1 score:  23.36528094575046
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/14.pth.tar
+Langs:  en_fr
+F1 score:  21.064836135296062
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/15.pth.tar
+Langs:  en_fr
+F1 score:  22.209098838941774
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/16.pth.tar
+Langs:  en_fr
+F1 score:  22.89392272976004
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/17.pth.tar
+Langs:  en_fr
+F1 score:  22.086654060994835
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/18.pth.tar
+Langs:  en_fr
+F1 score:  20.307412243394214
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/19.pth.tar
+Langs:  en_fr
+F1 score:  22.11482719574369
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/20.pth.tar
+Langs:  en_fr
+F1 score:  23.002280940332554
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/21.pth.tar
+Langs:  en_fr
+F1 score:  23.29051378045543
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/22.pth.tar
+Langs:  en_fr
+F1 score:  21.152606285859793
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/23.pth.tar
+Langs:  en_fr
+F1 score:  21.921949580924622
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/0.pth.tar
+Langs:  fr_fr
+F1 score:  26.752514077786987
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/1.pth.tar
+Langs:  fr_fr
+F1 score:  28.01296100164634
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/2.pth.tar
+Langs:  fr_fr
+F1 score:  26.7189580864696
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/3.pth.tar
+Langs:  fr_fr
+F1 score:  29.97808374317083
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/4.pth.tar
+Langs:  fr_fr
+F1 score:  12.300368067279761
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/5.pth.tar
+Langs:  fr_fr
+F1 score:  14.571689229575414
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/6.pth.tar
+Langs:  fr_fr
+F1 score:  12.75337395006449
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/7.pth.tar
+Langs:  fr_fr
+F1 score:  13.70133070478068
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/8.pth.tar
+Langs:  fr_fr
+F1 score:  12.54364900433082
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/9.pth.tar
+Langs:  fr_fr
+F1 score:  15.4336587565408
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/10.pth.tar
+Langs:  fr_fr
+F1 score:  15.949582123045627
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/11.pth.tar
+Langs:  fr_fr
+F1 score:  13.399326782924195
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/12.pth.tar
+Langs:  fr_fr
+F1 score:  15.943290374673614
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/13.pth.tar
+Langs:  fr_fr
+F1 score:  14.613634218722146
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/14.pth.tar
+Langs:  fr_fr
+F1 score:  13.483216761217662
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/15.pth.tar
+Langs:  fr_fr
+F1 score:  14.695426947558278
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/16.pth.tar
+Langs:  fr_fr
+F1 score:  15.700009437622557
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/17.pth.tar
+Langs:  fr_fr
+F1 score:  15.102293342281598
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/18.pth.tar
+Langs:  fr_fr
+F1 score:  13.640510470517915
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/19.pth.tar
+Langs:  fr_fr
+F1 score:  14.861109654687876
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/20.pth.tar
+Langs:  fr_fr
+F1 score:  15.687425940878539
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/21.pth.tar
+Langs:  fr_fr
+F1 score:  15.754537923513315
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/22.pth.tar
+Langs:  fr_fr
+F1 score:  14.412298270817823
+---------------------------
+Loading dataset
+Model:  /Users/zhou/Dropbox/Travail/MAThesis/VGNSL/output_multi/en_fr_0403/23.pth.tar
+Langs:  fr_fr
+F1 score:  14.926124387865315
+---------------------------

@@ -1,0 +1,145 @@
+import pkuseg
+import os
+from zhconv import convert
+import random
+
+class seg_cn_sent:
+    def __init__(self):
+        self.cn_folder = "./data/mscoco/cn"
+        self.en_folder = "./data/mscoco/en"
+        self.fr_folder = "./data/mscoco/fr"
+        self.datasetTypes = ["train", "test", "dev"]
+
+
+    def countFileLines(self, filePath):
+        file = open(filePath, "r")
+        cnt = 0
+        # Reading from file
+        Content = file.read()
+        CoList = Content.split("\n")
+        for i in CoList:
+            cnt += 1
+        return cnt
+
+    def convert2sim(self):
+        for dtType in self.datasetTypes:
+            srcFile = os.path.join(self.cn_folder, f'ori_{dtType}_caps.txt')
+            outFile = os.path.join(self.cn_folder, f'sim_{dtType}_caps.txt')
+            ensrcFile = os.path.join(self.en_folder, f'{dtType}_caps.txt')
+            if os.path.exists(outFile):
+                os.remove(outFile)
+            i = 0
+            with open(srcFile, 'r') as fread, open(outFile, "a") as fwrite:
+                for line in fread:
+                    try:
+                        sim_line = convert(line, 'zh-cn')
+                        fwrite.write(sim_line)
+                    except:
+                        print(f'{i} => {line}')
+                        break
+
+                    i += 1
+                    if i % 10000 == 0:
+                        print(f'{i} => {line} => {sim_line}')
+
+                fread.close()
+                fwrite.close()
+
+            assert self.countFileLines(srcFile) == self.countFileLines(ensrcFile) == self.countFileLines(outFile)
+
+    def run(self):
+        self.convert2sim()
+
+        pseg = pkuseg.pkuseg()  # pku
+        for dtType in self.datasetTypes:
+            srcFile = os.path.join(self.cn_folder, f'sim_{dtType}_caps.txt')
+            outFile = os.path.join(self.cn_folder, f'seg_{dtType}_caps.txt')
+            ensrcFile = os.path.join(self.en_folder, f'{dtType}_caps.txt')
+            frsrcFile = os.path.join(self.fr_folder, f'{dtType}_caps.txt')
+
+
+
+            if os.path.exists(outFile):
+                os.remove(outFile)
+
+            i = 0
+            with open(srcFile, 'r') as fread, open(outFile, "a") as fwrite:
+
+
+                for sim_line in fread:
+                    try:
+                        seg_Res = pseg.cut(sim_line)
+                        if "".join(seg_Res) != "".join(sim_line.split()):
+                            print(f'{i} => {sim_line}')
+                            break
+                        fwrite.write(" ".join(seg_Res) + "\n")
+                    except:
+                        print(f'{i} => {sim_line}')
+                        continue
+
+                    i += 1
+                    if i % 10000 == 0:
+                        print(f'{i} => {sim_line} => {seg_Res}')
+
+
+            assert self.countFileLines(srcFile) == self.countFileLines(ensrcFile) == self.countFileLines(outFile)
+            print("ori_len:" + str(self.countFileLines(srcFile)))
+            print("len_out: " + str(self.countFileLines(outFile)))
+            print("en: " + str(self.countFileLines(ensrcFile)))
+            print("==========")
+
+    def findErr(self):
+        dtType = "train"
+        srcFile = os.path.join(self.cn_folder, f'ori_{dtType}_caps.txt')
+        outFile = os.path.join(self.cn_folder, f'seg_{dtType}_caps.txt')
+        fileLen = self.countFileLines(outFile)
+
+        idx = 0
+        with open(srcFile, 'r') as fread, open(outFile, "r") as fwrite:
+            for l1, l2 in zip(fread, fwrite):
+                joined = "".join(l2.split())
+                preprocessed_l1 = convert("".join(l1.split()), "zh-cn")
+                if preprocessed_l1 != joined:
+
+                    print(f'[{idx}] => {l1} => {joined}')
+                    break
+                idx += 1
+
+
+    def checkRandomLines(self, n):
+        assert n > 0
+
+        for dtType in self.datasetTypes:
+            srcFile = os.path.join(self.cn_folder, f'sim_{dtType}_caps.txt')
+            outFile = os.path.join(self.cn_folder, f'seg_{dtType}_caps.txt')
+            ensrcFile = os.path.join(self.en_folder, f'{dtType}_caps.txt')
+
+            caps_len = self.countFileLines(srcFile)
+
+            assert caps_len == self.countFileLines(outFile) == self.countFileLines(ensrcFile)
+
+            rand_lst = set([random.randint(int(caps_len * 0.80), caps_len) for _ in range(n)])
+            assert len(rand_lst) == n
+            ori_lst = []
+            seg_lst = []
+            with open(srcFile) as oriFile:
+                for idx, line in enumerate(oriFile):
+                    if idx in rand_lst:
+                        ori_lst.append([idx, line])
+            with open(outFile) as segFile:
+                for idx, line in enumerate(segFile):
+                    if idx in rand_lst:
+                        seg_lst.append([idx, line])
+
+            for i in range(len(ori_lst)):
+                print("idx[{}]: ori : seg => {}: {}".format(ori_lst[i][0], ori_lst[i][1], seg_lst[i][1]))
+
+
+
+
+
+if __name__ == "__main__":
+    sol = seg_cn_sent()
+    #sol.run()
+    sol.checkRandomLines(10)
+
