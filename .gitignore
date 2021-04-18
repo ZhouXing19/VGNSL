@@ -105,9 +105,12 @@ venv.bak/
 
 # data
 data/
+<<<<<<< HEAD
 
 # output
 output/
 output_multi/
 output_sing/
 outputs/
+=======
+>>>>>>> 4a5f2cd3633b1f417b1871e48882711a830e8277
