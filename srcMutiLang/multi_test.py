@@ -60,9 +60,14 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--candidate', type=str, required=True,
                         help='model path to evaluate')
+    parser.add_argument('--langs', type=str, help='The model is trained on which language pairs')
+    parser.add_argument('--model_train_langs', type=str, help='The languages that the models are trained on', default="en_fr")
+
     args = parser.parse_args()
 
-    trees, ground_truth = test_trees(args.candidate)
+    trees, ground_truth = test_trees(args.candidate, langs=args.langs, model_langs=args.model_train_langs)
     f1, _, _ =  f1_score(trees, ground_truth)
-    print('Model:', args.candidate)
-    print('F1 score:', f1)
+    print('Model: ', args.candidate)
+    print('Langs: ', args.langs)
+    print('F1 score: ', f1)
+    print("---------------------------")

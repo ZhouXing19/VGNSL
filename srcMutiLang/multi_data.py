@@ -8,22 +8,48 @@ from multi_vocab import Vocabulary
 
 class PrecompMultiDataset(data.Dataset):
     def __init__(self, data_path, data_split, langs, vocab,
-                 load_img=True, img_dim=2048):
+                 load_img=True, img_dim=2048, cn_seg = True):
         self.vocab = vocab
-
         lang1, lang2 = langs
-
         # captions
         self.captions = list()
 
-        eng_data_path = os.path.join(data_path, langs[0])
-        ano_data_path = os.path.join(data_path, langs[1])
-        with open(os.path.join(eng_data_path, f'{data_split}_caps.txt'), 'r') as f1, \
-                open(os.path.join(ano_data_path, f'{data_split}_caps.txt'), 'r') as f2:
-            for en_line, ano_line in zip(f1, f2):
-                self.captions.append(en_line.strip().lower().split())
-                if lang2 == "fr":
-                    self.captions.append(self.split_fr_line(ano_line))
+        lang_data_paths = []
+        for lang in langs:
+            lang_folder_path = os.path.join(data_path, lang)
+            if lang == "cn":
+                if cn_seg:
+                    lang_data_paths.append(os.path.join(lang_folder_path, f'seg_{data_split}_caps.txt'))
+                else:
+                    lang_data_paths.append(os.path.join(lang_folder_path, f'sim_{data_split}_caps.txt'))
+            else:
+                lang_data_paths.append(os.path.join(lang_folder_path, f'{data_split}_caps.txt'))
+
+
+        with open(lang_data_paths[0], 'r') as f1, \
+                open(lang_data_paths[1], 'r') as f2:
+            for line1, line2 in zip(f1, f2):
+                if lang1 == "en":
+                    self.captions.append(line1.strip().lower().split())
+                elif lang1 == "fr":
+                    self.captions.append(self.split_fr_line(line1))
+                elif lang1 == "cn":
+                    self.captions.append(self.split_cn_line(line1, cn_seg))
+                else:
+                    print(f"Not prepared for this language : {lang1}")
+                    break
+
+                if lang2 == "en":
+                    self.captions.append(line2.strip().lower().split())
+                elif lang2 == "fr":
+                    self.captions.append(self.split_fr_line(line2))
+                elif lang2 == "cn":
+                    self.captions.append(self.split_cn_line(line2, cn_seg))
+                else:
+                    print(f"Not prepared for this language : {lang2}")
+                    break
+
+
             f1.close()
             f2.close()
 
@@ -68,12 +94,22 @@ class PrecompMultiDataset(data.Dataset):
             fully_splited += subline.strip().lower().split()
         return fully_splited
 
+    def split_cn_line(self, line, seg = True):
+        if line[-1] == "\." and line[-2] != " " or line[-1] not in ["\.", " "]:
+            line = line[:-1] + " ."
+        elif line[-1] == " ":
+            line += "."
+
+        if seg:
+            return line.strip().split()
+        else:
+            return list(line.replace(" ", ""))
+
 def collate_fn(data):
     """ build mini-batch tensors from a list of (image, caption) tuples """
     # sort a data list by caption length
     data.sort(key=lambda x: len(x[1]), reverse=True)
     zipped_data = list(zip(*data))
-    #print("zipped_data: {}".format(zipped_data))
     images, captions, ids, img_ids = zipped_data
     images = torch.stack(images, 0)
     targets = torch.zeros(len(captions), len(captions[0])).long()
@@ -86,8 +122,8 @@ def collate_fn(data):
 
 def get_precomp_loader(data_path, data_split, langs, vocab, batch_size=128,
                        shuffle=True, num_workers=2, load_img=True,
-                       img_dim=2048):
-    dset = PrecompMultiDataset(data_path, data_split, langs, vocab, load_img, img_dim)
+                       img_dim=2048, cn_seg=True):
+    dset = PrecompMultiDataset(data_path, data_split, langs, vocab, load_img, img_dim, cn_seg=cn_seg)
     data_loader = torch.utils.data.DataLoader(
         dataset=dset, batch_size=batch_size, shuffle=shuffle,
         pin_memory=True,
@@ -96,32 +132,21 @@ def get_precomp_loader(data_path, data_split, langs, vocab, batch_size=128,
     return data_loader
 
 
-def get_train_loaders(data_path, langs, vocab, batch_size, workers):
+def get_train_loaders(data_path, langs, vocab, batch_size, workers, cn_seg=True):
     train_loader = get_precomp_loader(
-        data_path, 'train', langs, vocab, batch_size, True, workers
+        data_path, 'train', langs, vocab, batch_size, True, workers, cn_seg
     )
     val_loader = get_precomp_loader(
-        data_path, 'dev', langs, vocab, batch_size, False, workers
+        data_path, 'dev', langs, vocab, batch_size, False, workers, cn_seg
     )
     return train_loader, val_loader
 
 
 def get_eval_loader(data_path, split_name, langs, vocab, batch_size, workers,
-                    load_img=False, img_dim=2048):
+                    load_img=False, img_dim=2048, cn_seg=True):
     eval_loader = get_precomp_loader(
         data_path, split_name, langs, vocab, batch_size, False, workers,
-        load_img=load_img, img_dim=img_dim
+        load_img=load_img, img_dim=img_dim, cn_seg=cn_seg
     )
     return eval_loader
 
-
-# if __name__ == "__main__":
-#     datapath = "./data/mscoco"
-#     langs = ["en", "fr"]
-#     vocab = pickle.load(open(os.path.join(datapath, 'vocab.pkl'), 'rb'))
-#
-#
-# data_path = "./demo_data"
-# langs = ["en", "fr"]
-# vocab_en_fr = pickle.load(open(os.path.join(data_path, 'en_fr_vocab.pkl'), 'rb'))
-# train_loader, val_loader = get_train_loaders(data_path, langs, vocab_en_fr, batch_size=128, workers=0)

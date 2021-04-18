@@ -10,12 +10,12 @@ class PrecompDataset(data.Dataset):
     """ load precomputed captions and image features """
 
     def __init__(self, data_path, data_split, vocab, 
-                 load_img=True, img_dim=2048):
+                 load_img=True, img_dim=2048, lang = 'en'):
         self.vocab = vocab
-
+        text_folder = os.path.join(data_path, lang)
         # captions
         self.captions = list()
-        with open(os.path.join(data_path, f'{data_split}_caps.txt'), 'r') as f:
+        with open(os.path.join(text_folder, f'{data_split}_caps.txt'), 'r') as f:
             for line in f:
                 self.captions.append(line.strip().lower().split())
             f.close()
@@ -65,8 +65,8 @@ def collate_fn(data):
 
 def get_precomp_loader(data_path, data_split, vocab, batch_size=128,
                        shuffle=True, num_workers=2, load_img=True, 
-                       img_dim=2048):
-    dset = PrecompDataset(data_path, data_split, vocab, load_img, img_dim)
+                       img_dim=2048, lang = 'en'):
+    dset = PrecompDataset(data_path, data_split, vocab, load_img, img_dim, lang = lang)
     data_loader = torch.utils.data.DataLoader(
         dataset=dset, batch_size=batch_size, shuffle=shuffle,
         pin_memory=True, 
@@ -75,20 +75,20 @@ def get_precomp_loader(data_path, data_split, vocab, batch_size=128,
     return data_loader
 
 
-def get_train_loaders(data_path, vocab, batch_size, workers):
+def get_train_loaders(data_path, vocab, batch_size, workers, lang = 'en'):
     train_loader = get_precomp_loader(
-        data_path, 'train', vocab, batch_size, True, workers
+        data_path, 'train', vocab, batch_size, True, workers, lang = lang
     )
     val_loader = get_precomp_loader(
-        data_path, 'dev', vocab, batch_size, False, workers
+        data_path, 'dev', vocab, batch_size, False, workers, lang = lang
     )
     return train_loader, val_loader
 
 
-def get_eval_loader(data_path, split_name, vocab, batch_size, workers, 
-                    load_img=False, img_dim=2048):
+def get_eval_loader(data_path, split_name, vocab, batch_size, workers,
+                    load_img=False, img_dim=2048, lang='en'):
     eval_loader = get_precomp_loader(
         data_path, split_name, vocab, batch_size, False, workers, 
-        load_img=load_img, img_dim=img_dim
+        load_img=load_img, img_dim=img_dim, lang = lang
     )
     return eval_loader

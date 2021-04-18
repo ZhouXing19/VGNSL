@@ -210,14 +210,14 @@ def t2i(images, captions, npts=None, measure='cosine', return_ranks=False):
 
 
 
-def test_trees(model_path):
+def test_trees(model_path, langs = "en_fr", model_langs = "en_fr"):
     """ use the trained model to generate parse trees for text """
     # load model and options
     checkpoint = torch.load(model_path, map_location='cpu')
     opt = checkpoint['opt']
 
-    # load vocabulary used by the model
-    vocab = pickle.load(open(os.path.join(opt.data_path, 'en_fr_vocab.pkl'), 'rb'))
+
+    vocab = pickle.load(open(os.path.join(opt.data_path, f'{model_langs}_True_vocab.pkl'), 'rb'))
     opt.vocab_size = len(vocab)
 
     # construct model
@@ -226,9 +226,10 @@ def test_trees(model_path):
     # load model state
     model.load_state_dict(checkpoint['model'])
 
+    languages = langs.split("_")
     print('Loading dataset')
     data_loader = get_eval_loader(
-        opt.data_path, 'test', vocab, opt.batch_size, opt.workers, 
+        opt.data_path, 'test', languages, vocab, opt.batch_size, opt.workers,
         load_img=False, img_dim=opt.img_dim
     )
 
@@ -258,5 +259,5 @@ def test_trees(model_path):
         del images, captions, img_emb, cap_emb
 
     ground_truth = [line.strip() for line in open(
-        os.path.join(opt.data_path, 'test_ground-truth.txt'))]
+        os.path.join(opt.data_path, f'{langs}_test_ground-truth.txt'))]
     return trees, ground_truth

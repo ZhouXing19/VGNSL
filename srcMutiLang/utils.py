@@ -232,3 +232,29 @@ def clean_tree(sentence, remove_tag_set={'<start>', '<end>', '<pad>'}):
     assert len(stack) == 1
     return stack[0]
 
+def split_fr_line(line):
+    if line[-1] == "\." and line[-2] != " " or line[-1] not in ["\.", " "]:
+        line = line[:-1] + " ."
+    elif line[-1] == " ":
+        line += "."
+
+    splited_by_prime = line.split('\'')
+    for idx in range(len(splited_by_prime) - 1):
+        splited_by_prime[idx] += '\''
+    fully_splited = []
+    for subline in splited_by_prime:
+        fully_splited += subline.strip().lower().split()
+    return fully_splited
+
+def split_cn_line(line, seg = True):
+    if line[-1] == "\." and line[-2] != " " or line[-1] not in ["\.", " "]:
+        line = line[:-1] + " ."
+    elif line[-1] == " ":
+        line += "."
+
+    if seg:
+        return line.strip().split()
+    else:
+        return list(line.replace(" ", ""))
+
+

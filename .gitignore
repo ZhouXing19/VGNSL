@@ -105,3 +105,10 @@ venv.bak/
 
 # data
 data/
+
+# output
+output/
+output_multi/
+output_sing/
+outputs/
+

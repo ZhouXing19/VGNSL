@@ -82,6 +82,7 @@ def save_checkpoint(state, is_best, curr_epoch, filename='checkpoint.pth.tar', p
     shutil.copyfile (prefix + filename, prefix + str(curr_epoch) + '.pth.tar')
 
 
+
 def adjust_learning_rate(opt, optimizer, epoch):
     """Sets the learning rate to the initial LR
        decayed by 10 every 30 epochs"""
@@ -133,7 +134,7 @@ if __name__ == '__main__':
                         help='number of steps to print and record the log')
     parser.add_argument('--val_step', default=500, type=int,
                         help='number of steps to run validation')
-    parser.add_argument('--logger_name', default='../output/',
+    parser.add_argument('--logger_name', default='../output_sing/',
                         help='path to save the model and log')
     parser.add_argument('--img_dim', default=2048, type=int,
                         help='dimensionality of the image embedding')
@@ -166,16 +167,19 @@ if __name__ == '__main__':
 
     parser.add_argument('--lambda_hi', type=float, default=0,
                         help='penalization for head-initial inductive bias')
+
+    parser.add_argument('--lang', type=str, default='en')
     opt = parser.parse_args()
 
     # setup logger
-    if os.path.exists(opt.logger_name):
-        print(f'Warning: the folder {opt.logger_name} exists.')
-    os.system('mkdir {:s}'.format(opt.logger_name))
+    output_folder = os.path.join(opt.logger_name, opt.lang)
+    if os.path.exists(output_folder):
+        print(f'Warning: the folder {output_folder} exists.')
+    os.system('mkdir -p {:s}'.format(output_folder))
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.INFO)
     formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-    handler = logging.FileHandler(os.path.join(opt.logger_name, 'train.log'), 'w')
+    handler = logging.FileHandler(os.path.join(output_folder, 'train.log'), 'w')
     handler.setLevel(logging.INFO)
     handler.setFormatter(formatter)
     logger.addHandler(handler)
@@ -185,18 +189,20 @@ if __name__ == '__main__':
     logger.addHandler(console)
     logger.propagate = False
 
+    textfolder = os.path.join(opt.data_path, opt.lang)
+
     # load predefined vocabulary and pretrained word embeddings if applicable
-    vocab = pickle.load(open(os.path.join(opt.data_path, 'vocab.pkl'), 'rb'))
+    vocab = pickle.load(open(os.path.join(textfolder, 'vocab.pkl'), 'rb'))
     opt.vocab_size = len(vocab)
 
     if opt.init_embeddings:
         opt.vocab_init_embeddings = os.path.join(
-            opt.data_path, f'vocab.pkl.{opt.init_embeddings_key}_embeddings.npy'
+            textfolder, f'vocab.pkl.{opt.init_embeddings_key}_embeddings.npy'
         )
 
     # Load data loaders
     train_loader, val_loader = data.get_train_loaders(
-        opt.data_path, vocab, opt.batch_size, opt.workers
+        opt.data_path, vocab, opt.batch_size, opt.workers, lang = opt.lang
     )
 
     # construct the model
@@ -221,4 +227,4 @@ if __name__ == '__main__':
             'best_rsum': best_rsum,
             'opt': opt,
             'Eiters': model.Eiters,
-        }, is_best, epoch, prefix=opt.logger_name + '/')
+        }, is_best, epoch, prefix= output_folder + '/')

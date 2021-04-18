@@ -133,7 +133,7 @@ if __name__ == '__main__':
                         help='number of steps to print and record the log')
     parser.add_argument('--val_step', default=500, type=int,
                         help='number of steps to run validation')
-    parser.add_argument('--logger_name', default='../output/',
+    parser.add_argument('--logger_name', default='../output_multi/',
                         help='path to save the model and log')
     parser.add_argument('--img_dim', default=2048, type=int,
                         help='dimensionality of the image embedding')
@@ -164,20 +164,29 @@ if __name__ == '__main__':
     parser.add_argument('--vse_reward_alpha', type=float, default=1.0)
     parser.add_argument('--vse_loss_alpha', type=float, default=1.0)
 
-    parser.add_argument('--langs', type = list, default = ["en", "fr"])
+
+    parser.add_argument('--langs', default = "en fr", help="The language for multilangugage VGNSL to train")
+
+    parser.add_argument('--cn_seg', type=bool, default= True,
+                        help = "Should chinese text be parsed into words before fed into the model")
 
     parser.add_argument('--lambda_hi', type=float, default=0,
                         help='penalization for head-initial inductive bias')
     opt = parser.parse_args()
 
-    # setup logger
-    if os.path.exists(opt.logger_name):
-        print(f'Warning: the folder {opt.logger_name} exists.')
-    os.system('mkdir {:s}'.format(opt.logger_name))
+    languages = [lang for lang in opt.langs.split(" ") if len(lang) > 0]
+
+
+    output_folder = os.path.join(opt.logger_name, "_".join(languages + [str(opt.cn_seg)]))
+
+    if os.path.exists(output_folder):
+        print(f'Warning: the folder {output_folder} exists.')
+    os.system('mkdir -p {:s}'.format(output_folder))
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.INFO)
     formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-    handler = logging.FileHandler(os.path.join(opt.logger_name, 'train.log'), 'w')
+    #handler = logging.FileHandler(os.path.join(opt.logger_name, 'train.log'), 'w')
+    handler = logging.FileHandler(os.path.join(output_folder, 'train.log'), 'w')
     handler.setLevel(logging.INFO)
     handler.setFormatter(formatter)
     logger.addHandler(handler)
@@ -187,18 +196,22 @@ if __name__ == '__main__':
     logger.addHandler(console)
     logger.propagate = False
 
+
+
     # load predefined vocabulary and pretrained word embeddings if applicable
-    vocab = pickle.load(open(os.path.join(opt.data_path, 'en_fr_vocab.pkl'), 'rb'))
+    vocab_file_name = "_".join(languages) + f'_{opt.cn_seg}_vocab.pkl'
+    vocab = pickle.load(open(os.path.join(opt.data_path, vocab_file_name), 'rb'))
     opt.vocab_size = len(vocab)
 
     if opt.init_embeddings:
         opt.vocab_init_embeddings = os.path.join(
-            opt.data_path, f'en_fr_vocab.pkl.{opt.init_embeddings_key}_embeddings.npy'
+            opt.data_path, f'{vocab_file_name}.{opt.init_embeddings_key}_embeddings.npy'
         )
+
 
     # Load data loaders
     train_loader, val_loader = multi_data.get_train_loaders(
-        opt.data_path, opt.langs, vocab, opt.batch_size, opt.workers
+        opt.data_path, languages, vocab, opt.batch_size, opt.workers, opt.cn_seg
     )
     # construct the model
     model = VGNSL(opt)
