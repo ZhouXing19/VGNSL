@@ -9,7 +9,7 @@ import torch.utils.data as data
 class PrecompDataset(data.Dataset):
     """ load precomputed captions and image features """
 
-    def __init__(self, data_path, data_split, vocab, 
+    def __init__(self, data_path, data_split, vocab,
                  load_img=True, img_dim=2048, lang = 'en'):
         self.vocab = vocab
         text_folder = os.path.join(data_path, lang)
@@ -64,7 +64,7 @@ def collate_fn(data):
 
 
 def get_precomp_loader(data_path, data_split, vocab, batch_size=128,
-                       shuffle=True, num_workers=2, load_img=True, 
+                       shuffle=True, num_workers=2, load_img=True,
                        img_dim=2048, lang = 'en'):
     dset = PrecompDataset(data_path, data_split, vocab, load_img, img_dim, lang = lang)
     data_loader = torch.utils.data.DataLoader(
