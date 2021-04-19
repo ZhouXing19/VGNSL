@@ -10,6 +10,7 @@ class PrecompMultiDataset(data.Dataset):
     def __init__(self, data_path, data_split, langs, vocab,
                  load_img=True, img_dim=2048, cn_seg = True):
         self.vocab = vocab
+        self.langs = langs
         lang1, lang2 = langs
         # captions
         self.captions = list()
@@ -75,7 +76,10 @@ class PrecompMultiDataset(data.Dataset):
         caption = [self.vocab(token)
                    for token in ['<start>'] + self.captions[index] + ['<end>']]
         caption = torch.tensor(caption)
-        return image, caption, index, img_id
+        lang1, lang2 = self.langs
+        this_lang = lang1 if not index % 2 else lang2
+        #print(f"test : {self.captions[index]}, lang: {this_lang}")
+        return image, caption, index, img_id, this_lang
 
     def __len__(self):
         return self.length
@@ -110,14 +114,14 @@ def collate_fn(data):
     # sort a data list by caption length
     data.sort(key=lambda x: len(x[1]), reverse=True)
     zipped_data = list(zip(*data))
-    images, captions, ids, img_ids = zipped_data
+    images, captions, ids, img_ids, cap_langs = zipped_data
     images = torch.stack(images, 0)
     targets = torch.zeros(len(captions), len(captions[0])).long()
     lengths = [len(cap) for cap in captions]
     for i, cap in enumerate(captions):
         end = len(cap)
         targets[i, :end] = cap[:end]
-    return images, targets, lengths, ids
+    return images, targets, lengths, ids, cap_langs
 
 
 def get_precomp_loader(data_path, data_split, langs, vocab, batch_size=128,

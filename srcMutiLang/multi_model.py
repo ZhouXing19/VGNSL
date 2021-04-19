@@ -17,6 +17,7 @@ from utils import make_embeddings, l2norm, cosine_sim, sequence_mask, \
     index_mask, index_one_hot_ellipsis
 import utils
 
+from datetime import datetime
 
 class EncoderImagePrecomp(nn.Module):
     """ image encoder """
@@ -79,8 +80,9 @@ class EncoderText(nn.Module):
     def reset_weights(self):
         self.sem_embedding.weight.data.uniform_(-0.1, 0.1)
 
-    def forward(self, x, lengths, volatile=False):  
+    def forward(self, x, lengths, volatile=False, cap_langs=None):
         """ sample a tree for each sentence """
+
         max_select_cnt = int(lengths.max(dim=0)[0].item()) - 1
 
         tree_indices = list()
@@ -221,7 +223,8 @@ class ContrastiveLoss(nn.Module):
         self.margin = margin
         self.sim = cosine_sim
 
-    def forward(self, im, s):
+    def forward(self, im, s, cap_langs=None, lang_names=None):
+
         scores = self.sim(im, s)
         diagonal = scores.diag().view(im.size(0), 1)
         d1 = diagonal.expand_as(scores)
@@ -235,10 +238,15 @@ class ContrastiveLoss(nn.Module):
         loss_s = loss_s.masked_fill_(I, 0)
         loss_im = loss_im.masked_fill_(I, 0)
 
+        loss_s_lang1, lang1_len = utils.break_loss_torch_for_langs(loss_s, cap_langs, lang_names[0])
+        loss_s_lang2, lang2_len = utils.break_loss_torch_for_langs(loss_s, cap_langs, lang_names[1])
+
         loss_s = loss_s.mean(1)
         loss_im = loss_im.mean(0)
 
-        return loss_s + loss_im
+        assert lang1_len + lang2_len == len(loss_s)
+
+        return loss_s + loss_im, (lang_names[0], loss_s_lang1, lang1_len), (lang_names[1], loss_s_lang2, lang2_len)
 
 
 class VGNSL(object):
@@ -291,7 +299,7 @@ class VGNSL(object):
         self.img_enc.eval()
         self.txt_enc.eval()
 
-    def forward_emb(self, images, captions, lengths, volatile=False):
+    def forward_emb(self, images, captions, lengths, volatile=False, cap_langs=None):
         """Compute the image and caption embeddings
         """
         # Set mini-batch dataset
@@ -300,11 +308,11 @@ class VGNSL(object):
             captions = captions.cuda()
         with torch.set_grad_enabled(not volatile):
             img_emb = self.img_enc(images)
-            txt_outputs= self.txt_enc(captions, lengths, volatile)
+            txt_outputs= self.txt_enc(captions, lengths, volatile, cap_langs=cap_langs)
         return (img_emb, ) + txt_outputs
 
     def forward_reward(self, base_img_emb, cap_span_features, left_span_features, right_span_features,
-                       word_embs, lengths, span_bounds, **kwargs):
+                       word_embs, lengths, span_bounds, cap_langs=None, **kwargs):
         """Compute the loss given pairs of image and caption embeddings
         """
         reward_matrix = torch.zeros(base_img_emb.size(0), lengths.max(0)[0]-1).float()
@@ -315,13 +323,25 @@ class VGNSL(object):
             right_reg_matrix = right_reg_matrix.cuda()
             left_reg_matrix = left_reg_matrix.cuda()
 
+
+        lang1, lang2 = None, None
+        if cap_langs:
+            lang1, lang2 = set(cap_langs)
         matching_loss = 0
+        lang1_loss = 0
+        lang2_loss = 0
+
+        lang1_len = 0
+        lang2_len = 0
+
         for i in range(lengths.max(0)[0] - 1):
             curr_imgs = list()
             curr_caps = list()
             curr_left_caps = list()
             curr_right_caps = list()
+            curr_langs = list()
             indices = list()
+
             for j in range(base_img_emb.size(0)):
                 if i < lengths[j] - 1:
                     curr_imgs.append(base_img_emb[j].reshape(1, -1))
@@ -329,27 +349,42 @@ class VGNSL(object):
                     curr_left_caps.append(left_span_features[lengths[j] - 2 - i][j].reshape(1, -1))
                     curr_right_caps.append(right_span_features[lengths[j] - 2 - i][j].reshape(1, -1))
                     indices.append(j)
+                    curr_langs.append(cap_langs[j])
 
             img_emb = torch.cat(curr_imgs, dim=0)
             cap_emb = torch.cat(curr_caps, dim=0)
             left_cap_emb = torch.cat(curr_left_caps, dim=0)
             right_cap_emb = torch.cat(curr_right_caps, dim=0)
+
             reward = self.reward_criterion(img_emb, cap_emb)
-            left_reg = self.loss_criterion(img_emb, left_cap_emb)
-            right_reg = self.loss_criterion(img_emb, right_cap_emb)
+            left_reg, (left_lang1, left_reg_s_lang1, left_lang1_len), (left_lang2, left_reg_s_lang2, left_lang2_len) = \
+                self.loss_criterion(img_emb, left_cap_emb, cap_langs=curr_langs, lang_names=[lang1, lang2])
+            right_reg, (right_lang1, right_reg_s_lang1, right_lang1_len), (right_lang2, right_reg_s_lang2, right_lang2_len) = \
+                self.loss_criterion(img_emb, right_cap_emb, cap_langs=curr_langs, lang_names=[lang1, lang2])
             for idx, j in enumerate(indices):
                 reward_matrix[j][lengths[j] - 2 - i] = reward[idx]
                 left_reg_matrix[j][lengths[j] - 2 - i] = left_reg[idx]
                 right_reg_matrix[j][lengths[j] - 2 - i] = right_reg[idx]
 
-            this_matching_loss = self.loss_criterion(img_emb, cap_emb)
+            this_matching_loss, (this_lang1, this_matching_loss_lang1, this_lang1_len), (this_lang2, this_matching_loss_lang2, this_lang2_len) = \
+                self.loss_criterion(img_emb, cap_emb, cap_langs=curr_langs, lang_names=[lang1, lang2])
+
+            assert lang1 == this_lang1 == left_lang1 == right_lang1 and \
+                lang2 == this_lang2 == left_lang2 == right_lang2
+            assert left_lang1_len == right_lang1_len == this_lang1_len and \
+                left_lang2_len == right_lang2_len == this_lang2_len
+
             matching_loss += this_matching_loss.sum() + left_reg.sum() + right_reg.sum()
+            lang1_loss += this_matching_loss_lang1.sum() + left_reg_s_lang1.sum() + right_reg_s_lang1.sum()
+            lang2_loss += this_matching_loss_lang2.sum() + left_reg_s_lang2.sum() + right_reg_s_lang2.sum()
+            lang1_len += this_lang1_len
+            lang2_len += this_lang2_len
         reward_matrix = reward_matrix / (self.lambda_hi * right_reg_matrix + 1.0)
         reward_matrix = self.vse_reward_alpha * reward_matrix
 
-        return reward_matrix, matching_loss
+        return reward_matrix, matching_loss, (lang1, lang1_loss, lang1_len), (lang2, lang2_loss, lang2_len)
 
-    def train_emb(self, images, captions, lengths, ids=None, epoch=None, *args):
+    def train_emb(self, images, captions, lengths, ids=None, cap_langs=None, epoch=None, *args):
         """ one training step given images and captions """
         self.Eiters += 1
         self.logger.update('Eit', self.Eiters)
@@ -360,12 +395,12 @@ class VGNSL(object):
 
         # compute the embeddings
         img_emb, cap_span_features, left_span_features, right_span_features, word_embs, tree_indices, probs, \
-            span_bounds = self.forward_emb(images, captions, lengths)
+            span_bounds = self.forward_emb(images, captions, lengths, cap_langs=cap_langs)
 
         # measure accuracy and record loss
-        cum_reward, matching_loss = self.forward_reward(
+        cum_reward, matching_loss, (lang1, match_loss_l1, lang1_len), (lang2, match_loss_l2, lang2_len) = self.forward_reward(
             img_emb, cap_span_features, left_span_features, right_span_features, word_embs, lengths,
-            span_bounds
+            span_bounds, cap_langs=cap_langs
         )
         probs = torch.cat(probs, dim=0).reshape(-1, lengths.size(0)).transpose(0, 1)
         masks = sequence_mask(lengths - 1, lengths.max(0)[0] - 1).float()
@@ -373,10 +408,17 @@ class VGNSL(object):
         
         loss = rl_loss + matching_loss * self.vse_loss_alpha
         loss = loss / cum_reward.shape[0]
+
+        MatchLossL1 = 0 if lang1_len == 0 else float(match_loss_l1 / lang1_len)
+        MatchLossL2 = 0 if lang2_len == 0 else float(match_loss_l2 / lang2_len)
+
+        print(f"length check : lang1_len = {lang1_len}, lang2_len = {lang2_len}, whole_set_len = {cum_reward.shape[0]}")
         self.logger.update('Loss', float(loss), img_emb.size(0))
         self.logger.update('MatchLoss', float(matching_loss / cum_reward.shape[0]), img_emb.size(0))
         self.logger.update('RL-Loss', float(rl_loss / cum_reward.shape[0]), img_emb.size(0))
-        
+        self.logger.update(f'{lang1}_Loss', MatchLossL1, img_emb.size(0))
+        self.logger.update(f'{lang2}_Loss', MatchLossL2, img_emb.size(0))
+
         # compute gradient and do SGD step
         self.optimizer.zero_grad()
         loss.backward()

@@ -106,7 +106,6 @@ def accuracy(output, target, topk=(1,)):
         res.append(correct_k.mul_(100.0 / batch_size))
     return res
 
-
 if __name__ == '__main__':
     # hyper parameters
     parser = argparse.ArgumentParser()
@@ -173,6 +172,7 @@ if __name__ == '__main__':
 
     # setup logger
     output_folder = os.path.join(opt.logger_name, opt.lang)
+    print(f"output_folder: {output_folder}")
     if os.path.exists(output_folder):
         print(f'Warning: the folder {output_folder} exists.')
     os.system('mkdir -p {:s}'.format(output_folder))

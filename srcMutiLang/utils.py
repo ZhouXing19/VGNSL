@@ -257,4 +257,17 @@ def split_cn_line(line, seg = True):
     else:
         return list(line.replace(" ", ""))
 
+def break_loss_torch_for_langs(loss_mat, cap_langs, lang, dim = 0, mean_dim = 1):
+    '''
+    loss_mat: torch.Tensor, 2 x 2
+    cap_langs = list(str), len(cap_langs) == len(loss_mat)
+    lang: str
+    '''
+    idxs = torch.tensor([i for i in range(len(cap_langs)) if cap_langs[i] == lang])
+    try:
+        res = torch.index_select(loss_mat, dim, idxs)
+        return res.mean(mean_dim), len(res)
+    except:
+        #print(f"idxs: {idxs}")
+        return torch.tensor([[float(0)]]), 0
 

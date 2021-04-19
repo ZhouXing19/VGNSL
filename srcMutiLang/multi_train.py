@@ -24,6 +24,9 @@ def train(opt, train_loader, model, epoch, val_loader, vocab):
 
     end = time.time()
     for i, train_data in enumerate(train_loader):
+
+        # _, _, _, tran_data_lang = train_data
+        # print(f"in multi_train.py, train_data's len: {tran_data_lang}")
         # Always reset to train mode
         model.train_start()
 
